@@ -5,14 +5,14 @@ export const connectToDB = async () => {
 
     if (!mongoDBUrl) {
         console.error('Error: MONGODB_URL is not defined in environment variables');
-        process.exit(1); // Exit with failure if the environment variable is missing
+        process.exit(1); // Exit the process if the environment variable is missing
     }
 
     try {
         await mongoose.connect(mongoDBUrl);
         console.log('Connected to MongoDB');
-    } catch (error) {
-        // Narrowing the type of error
+    } catch (error: unknown) {
+        // Narrow the type of error to an instance of Error
         if (error instanceof Error) {
             console.error('Error connecting to MongoDB:', error.message);
         } else {
