@@ -1,24 +1,23 @@
-import mongoose from 'mongoose';
+import mongoose from "mongoose";
 
-export const connectToDB = async () => {
-    const mongoDBUrl = process.env.MONGODB_URL;
+let isConnected: boolean = false;
 
-    if (!mongoDBUrl) {
-        console.error('Error: MONGODB_URL is not defined in environment variables');
-        process.exit(1); // Exit the process if the environment variable is missing
-    }
+export const connectToDB = async (): Promise<void> => {
+  mongoose.set("strictQuery", true)
 
-    try {
-        await mongoose.connect(mongoDBUrl);
-        console.log('Connected to MongoDB');
-    } catch (error: unknown) {
-        // Narrow the type of error to an instance of Error
-        if (error instanceof Error) {
-            console.error('Error connecting to MongoDB:', error.message);
-        } else {
-            console.error('Unknown error connecting to MongoDB:', error);
-        }
-        mongoose.disconnect();
-        process.exit(1);
-    }
-};
+  if (isConnected) {
+    console.log("MongoDB is already connected");
+    return;
+  }
+
+  try {
+    await mongoose.connect(process.env.MONGODB_URL || "", {
+      dbName: "Borcelle_Admin"
+    })
+
+    isConnected = true;
+    console.log("MongoDB is connected");
+  } catch (err) {
+    console.log(err)
+  }
+}
